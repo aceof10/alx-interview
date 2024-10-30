@@ -1,4 +1,19 @@
 #!/usr/bin/python3
+"""
+log_parser.py
+
+This script reads stdin line by line and computes metrics from log entries.
+It tracks the total file size and the number of occurrences of
+specific HTTP status codes.
+Statistics are printed every 10 lines and upon a keyboard
+interruption (CTRL + C).
+
+Log format:
+<IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
+
+Only status codes 200, 301, 400, 401, 403, 404, 405, and 500 are counted.
+"""
+
 import sys
 
 
