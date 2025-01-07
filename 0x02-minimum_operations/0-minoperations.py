@@ -10,7 +10,7 @@ def minOperations(n: int) -> int:
     """
         calculates the fewest number of operations
     """
-    i: int = 0
+    i = 0
 
     if n <= 1:
         return (0)
