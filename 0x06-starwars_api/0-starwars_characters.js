@@ -29,21 +29,35 @@ request(url, (error, response, body) => {
     return;
   }
 
-  filmData.characters.forEach((characterUrl) => {
-    request(characterUrl, (error, response, body) => {
-      if (error) {
-        console.log('Error:', error);
-        return;
-      }
+  function fetchCharacterName (url) {
+    return new Promise((resolve, reject) => {
+      request(url, (error, response, body) => {
+        if (error) {
+          reject(new Error(`Request error: ${error.message}`));
+          return;
+        }
 
-      if (response.statusCode !== 200) {
-        console.log(`Failed to retrieve character data. Status code: ${response.statusCode}`);
-        return;
-      }
+        if (response.statusCode !== 200) {
+          reject(new Error(`Failed to retrieve character data. Status code: ${response.statusCode}`));
+          return;
+        }
 
-      const characterData = JSON.parse(body);
-
-      console.log(characterData.name);
+        const characterData = JSON.parse(body);
+        resolve(characterData.name);
+      });
     });
-  });
+  }
+
+  const characterPromises = filmData.characters.map(fetchCharacterName);
+
+  // Wait for all character data to be retrieved and then print the names
+  Promise.all(characterPromises)
+    .then(names => {
+      names.forEach(name => {
+        console.log(name);
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
